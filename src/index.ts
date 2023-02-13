@@ -1,11 +1,12 @@
 import express, { Application, Request, Response } from 'express';
 import { ExpressPeerServer } from 'peer';
 import bodyParser from 'body-parser';
-import {ServerWrapper} from "./serverWrapper";
+import {PeerServerWrapper} from "./peerServerWrapper";
+import {HealthCheckController} from "./controller/healthCheckController";
+import {RoomController} from "./controller/roomController";
 const PORT = 3000;
 
 const app: Application = express();
-const serverWrapper = new ServerWrapper();
 
 const server = app.listen(PORT, (): void => {
   console.log(`Connected successfully on port ${PORT}`);
@@ -15,6 +16,8 @@ const server = app.listen(PORT, (): void => {
 const peerServer = ExpressPeerServer(server, {
   path: '/signal'
 });
+
+const serverWrapper = new PeerServerWrapper();
 
 app.use(bodyParser.json(), peerServer);
 app.use(bodyParser.urlencoded({ extended: true }), peerServer);
@@ -29,9 +32,11 @@ peerServer.on('disconnect', (client) => {
 
 app.use('/peerjs', peerServer);
 
-// Health Check
-app.get('/', async (req: Request, res: Response): Promise<Response> => {
-  return res.status(200).send({
-    message: 'Hello World!',
-  });
-});
+// Health Check Controller
+app.get('/', HealthCheckController.index());
+
+// Room Controller
+app.get('/room/list', RoomController.listRooms());
+app.post('/room/create', RoomController.createRoom());
+app.post('/room/delete', RoomController.deleteRoom());
+

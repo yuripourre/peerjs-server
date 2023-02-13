@@ -1,5 +1,5 @@
 
-export class ServerWrapper {
+export class PeerServerWrapper {
 
     onClientJoin(clientId: string) {
         console.log("Client joined: " + clientId);
