@@ -14,11 +14,16 @@ export class Room {
     }
 
     addUser(user: User) {
-        this.users.set(user.peerId, user);
+        if (!user) {
+            return;
+        }
+        this.users.set(user.id, user);
+        user.roomId = this.name;
     }
 
     removeUser(user: User) {
-        this.users.delete(user.peerId);
+        this.users.delete(user.id);
+        user.roomId = "";
     }
 
 }

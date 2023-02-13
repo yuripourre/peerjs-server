@@ -1,12 +1,14 @@
 export class User {
     
-    private _peerId: string;
-    private _id = "";
+    private _id: string;
+    private _peerId = "";
     private _name = "";
     private _profileImage = "";
+    private _roomId = "";
 
-    constructor(peerId: string) {
-        this._peerId = peerId;
+    constructor(id: string, name = "") {
+        this._id = id;
+        this._name = name;
     }
 
     get peerId(): string {
@@ -39,5 +41,13 @@ export class User {
 
     set profileImage(value: string) {
         this._profileImage = value;
+    }
+
+    get roomId(): string {
+        return this._roomId;
+    }
+
+    set roomId(value: string) {
+        this._roomId = value;
     }
 }

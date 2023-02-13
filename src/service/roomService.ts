@@ -1,4 +1,15 @@
 import {Room} from "../model/room";
+import {User} from "../model/user";
+
+class RoomInfo {
+    constructor(name: string, users: User[]) {
+        this.name = name;
+        this.users = users;
+    }
+
+    public name: string;
+    public users: User[];
+}
 
 export class RoomService {
     private static instance: RoomService;
@@ -7,6 +18,10 @@ export class RoomService {
 
     private constructor() {
         RoomService.ROOMS = new Map<string, Room>();
+        // Create fake rooms
+        this.createRoom("Lobby");
+        this.createRoom("Room 1");
+        this.createRoom("Room 2");
     }
 
     public static getInstance(): RoomService {
@@ -28,7 +43,19 @@ export class RoomService {
         RoomService.ROOMS.delete(name);
     }
 
-    listRooms() : Room[] {
-        return Array.from(RoomService.ROOMS.values());
+    listRooms(): RoomInfo[] {
+        const list: RoomInfo[] = [];
+
+        RoomService.ROOMS.forEach((value, key) => {
+            const r = new RoomInfo(value.name, Array.from(value.users.values()));
+            list.push(r);
+        });
+
+        return list;
     }
+
+    getRoomByName(name: string) {
+        return RoomService.ROOMS.get(name);
+    }
+
 }

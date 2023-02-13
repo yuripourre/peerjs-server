@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import {PeerServerWrapper} from "./peerServerWrapper";
 import {HealthCheckController} from "./controller/healthCheckController";
 import {RoomController} from "./controller/roomController";
+import {UserController} from "./controller/userController";
 const PORT = 3000;
 
 const app: Application = express();
@@ -40,3 +41,8 @@ app.get('/room/list', RoomController.listRooms());
 app.post('/room/create', RoomController.createRoom());
 app.post('/room/delete', RoomController.deleteRoom());
 
+// User Controller
+app.get('/user/list', UserController.listUsers());
+app.post('/user/create', UserController.createUser());
+app.post('/user/join', UserController.joinRoom());
+app.post('/user/leave', UserController.leaveRoom());
