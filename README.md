@@ -19,6 +19,7 @@ Then go inside the project and install the dependencies
 
 ```sh
 cd nodejs-typescript-skeleton
+npm install -g yarn
 yarn add express
 ```
 
