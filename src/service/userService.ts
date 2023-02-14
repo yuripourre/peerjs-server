@@ -1,4 +1,5 @@
 import {User} from "../model/user";
+import {RoomService} from "./roomService";
 
 export class UserService {
 
@@ -24,6 +25,10 @@ export class UserService {
 
     createUser(user: User) {
         UserService.USERS.set(user.id, user);
+        if (user.roomId !== "" ) {
+            const room = RoomService.getInstance().getRoomById(user.roomId);
+            room?.addUser(user);
+        }
         console.log(UserService.USERS);
     }
 
@@ -37,5 +42,15 @@ export class UserService {
 
     listUsers(): User[] {
         return Array.from(UserService.USERS.values());
+    }
+
+    updatePeerId(userId: string, peerId: string) {
+        const user = UserService.getInstance().getUserById(userId);
+        console.log("user", user);
+        if (user) {
+            user.peerId = peerId;
+            UserService.getInstance().createUser(user);
+        }
+        console.log("user!", user);
     }
 }

@@ -2,10 +2,12 @@ import {User} from "./user";
 
 export class Room {
 
+    id: string;
     name: string;
     users = new Map<string, User>();
 
-    constructor(name: string) {
+    constructor(id: string, name: string) {
+        this.id = id;
         this.name = name;
     }
 
@@ -18,7 +20,7 @@ export class Room {
             return;
         }
         this.users.set(user.id, user);
-        user.roomId = this.name;
+        user.roomId = this.id;
     }
 
     removeUser(user: User) {

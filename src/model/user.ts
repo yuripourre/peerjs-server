@@ -1,10 +1,12 @@
 export class User {
     
     private _id: string;
-    private _peerId = "";
+
     private _name = "";
     private _profileImage = "";
     private _roomId = "";
+    private _peerId = "";
+    private _lastPing = 0;
 
     constructor(id: string, name = "") {
         this._id = id;
@@ -49,5 +51,13 @@ export class User {
 
     set roomId(value: string) {
         this._roomId = value;
+    }
+
+    get lastPing(): number {
+        return this._lastPing;
+    }
+
+    set lastPing(value: number) {
+        this._lastPing = value;
     }
 }

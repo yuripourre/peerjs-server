@@ -1,9 +1,11 @@
 import {Request, Response} from "express";
 import {RoomService} from "../service/roomService";
+import {UserService} from "../service/userService";
+import {RoomInfo} from "../model/roomInfo";
 
 export class RoomController {
 
-    // curl -XGET http://localhost:3000/room/list -H 'Content-Type: application/json'
+    // curl -XGET http://localhost:3000/rooms/list -H 'Content-Type: application/json'
     static listRooms() {
         return async (req: Request, res: Response): Promise<Response> => {
             const rooms = RoomService.getInstance().listRooms();
@@ -14,12 +16,14 @@ export class RoomController {
         };
     }
 
-    // curl -XPOST http://localhost:3000/room/create -H 'Content-Type: application/json' -d '{ "name":"Room 1" }'
+    // curl -XPOST http://localhost:3000/rooms/create -H 'Content-Type: application/json' -d '{ "name":"Room 1" }'
     static createRoom() {
         return async (req: Request, res: Response): Promise<Response> => {
+            // Replace by proper id generation
+            const id = String(RoomService.ROOMS.size);
             const name = req.body.name;
 
-            RoomService.getInstance().createRoom(name);
+            RoomService.getInstance().createRoom(id, name);
 
             return res.status(200).send({
                 message: 'Created room ' + name,
@@ -27,7 +31,7 @@ export class RoomController {
         };
     }
 
-    // curl -XPOST http://localhost:3000/room/delete -H 'Content-Type: application/json' -d '{ "name":"Room 1" }'
+    // curl -XPOST http://localhost:3000/rooms/delete -H 'Content-Type: application/json' -d '{ "name":"Room 1" }'
     static deleteRoom() {
         return async (req: Request, res: Response): Promise<Response> => {
             const name = req.body.name;
@@ -39,5 +43,46 @@ export class RoomController {
         };
     }
 
+    // curl -XPOST http://localhost:3000/rooms/join -H 'Content-Type: application/json' -d '{ "userId":"1", "roomId": "Room 1" }'
+    static joinRoom() {
+        return async (req: Request, res: Response): Promise<Response> => {
+            const userId = req.body.userId;
+            const roomId = req.body.roomId;
+
+            if (RoomService.getInstance().joinRoom(userId, roomId)) {
+                const room = RoomService.getInstance().getRoomById(roomId);
+                if (room) {
+                    const roomInfo = new RoomInfo(room);
+                    return res.status(200).send({
+                        message: 'Joined room ' + roomId,
+                        room: roomInfo
+                    });
+                }
+            }
+
+            return res.status(405).send({
+                message: 'User not found!',
+            });
+        };
+    }
+
+    // curl -XPOST http://localhost:3000/rooms/leave -H 'Content-Type: application/json' -d '{ "userId":"1", "roomId":"Room 1" }'
+    static leaveRoom() {
+        return async (req: Request, res: Response): Promise<Response> => {
+            const userId = req.body.userId;
+            const roomId = req.body.roomId;
+
+            const user = UserService.getInstance().getUserById(userId);
+            const room = RoomService.getInstance().getRoomById(roomId);
+
+            if (user) {
+                room?.removeUser(user);
+            }
+
+            return res.status(200).send({
+                message: 'Left room ' + roomId,
+            });
+        };
+    }
 
 }
