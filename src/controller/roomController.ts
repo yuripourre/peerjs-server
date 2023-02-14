@@ -8,7 +8,7 @@ export class RoomController {
     // curl -XGET http://localhost:3000/rooms/list -H 'Content-Type: application/json'
     static listRooms() {
         return async (req: Request, res: Response): Promise<Response> => {
-            const rooms = RoomService.getInstance().listRooms();
+            const rooms = RoomService.getInstance().listAllRooms();
 
             return res.status(200).send({
                 rooms
@@ -70,17 +70,19 @@ export class RoomController {
     static leaveRoom() {
         return async (req: Request, res: Response): Promise<Response> => {
             const userId = req.body.userId;
-            const roomId = req.body.roomId;
 
             const user = UserService.getInstance().getUserById(userId);
-            const room = RoomService.getInstance().getRoomById(roomId);
 
             if (user) {
+                const room = RoomService.getInstance().getRoomById(user.roomId);
                 room?.removeUser(user);
+                return res.status(200).send({
+                    message: 'Left room ' + user.roomId,
+                });
             }
 
-            return res.status(200).send({
-                message: 'Left room ' + roomId,
+            return res.status(405).send({
+                message: 'Room not found!',
             });
         };
     }

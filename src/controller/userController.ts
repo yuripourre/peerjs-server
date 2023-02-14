@@ -37,8 +37,9 @@ export class UserController {
         return async (req: Request, res: Response): Promise<Response> => {
             const userId = req.body.userId;
             const peerId = req.body.peerId;
+            const profileUrl = req.body.profileUrl;
 
-            UserService.getInstance().updatePeerId(userId, peerId);
+            UserService.getInstance().updatePeerId(userId, peerId, profileUrl);
 
             return res.status(200).send({
                 message: 'User updated! '+userId+' '+peerId,

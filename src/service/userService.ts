@@ -44,11 +44,15 @@ export class UserService {
         return Array.from(UserService.USERS.values());
     }
 
-    updatePeerId(userId: string, peerId: string) {
+    updatePeerId(userId: string, peerId: string, profileUrl?: string) {
         const user = UserService.getInstance().getUserById(userId);
         console.log("user", user);
         if (user) {
             user.peerId = peerId;
+            if (profileUrl) {
+                user.profileImage = profileUrl;
+            }
+
             UserService.getInstance().createUser(user);
         }
         console.log("user!", user);

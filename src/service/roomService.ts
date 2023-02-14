@@ -34,7 +34,7 @@ export class RoomService {
         RoomService.ROOMS.delete(id);
     }
 
-    listRooms(): RoomInfo[] {
+    listAllRooms(): RoomInfo[] {
         const list: RoomInfo[] = [];
 
         RoomService.ROOMS.forEach((value, key) => {
@@ -55,6 +55,7 @@ export class RoomService {
                 return value;
             }
         });
+        return null;
     }
 
     joinRoom(userId: string, roomId: string) {
